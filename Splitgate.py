@@ -29,10 +29,10 @@ def run():
                 sct_img = sct.grab(monitor)
                 img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX") # Grab image data
                 color = img.getpixel((2, 2)) # Grab center pixel's color
-            if color == red and isShooting == False:
-                isShooting = True
+            if color == red and not isShooting and not win32api.GetAsyncKeyState(0x01):
+                isShooting = True 
                 windll.user32.mouse_event(0x0002,0,0,0,0) # Left mouse down
-            if isShooting == True and color != red:
+            if isShooting and color != red:
                 windll.user32.mouse_event(0x0004,0,0,0,0) # Left mouse Up
                 isShooting = False
             if win32api.GetKeyState(0x13) < 0 and paused == False: #0x13 is pause
