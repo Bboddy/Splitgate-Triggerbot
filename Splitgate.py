@@ -2,6 +2,9 @@ from PIL import Image
 from ctypes import windll
 import time, pyttsx3, win32api, mss, mss.tools
 
+center_width = int((win32api.GetSystemMetrics(0) / 2) - 2) # Grab monitor width
+center_height = int((win32api.GetSystemMetrics(1) / 2) - 2) # Grab monitor height
+
 isShooting = False
 paused = True
 active = True
@@ -22,7 +25,7 @@ def run():
     while active:
         while not paused:
             with mss.mss() as sct: # Mss image grab
-                monitor = {"top": 1280, "left": 720, "width": 4, "height": 4} # Grab 4x4 in center of screen
+                monitor = {"top": center_height, "left": center_width, "width": 4, "height": 4} # Grab 4x4 in center of screen
                 sct_img = sct.grab(monitor)
                 img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX") # Grab image data
                 color = img.getpixel((2, 2)) # Grab center pixel's color
