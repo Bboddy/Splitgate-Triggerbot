@@ -21,26 +21,26 @@ def run():
 
     while active:
         while not paused:
-            with mss.mss() as sct:
-                monitor = {"top": 1280, "left": 720, "width": 4, "height": 4}
+            with mss.mss() as sct: # Mss image grab
+                monitor = {"top": 1280, "left": 720, "width": 4, "height": 4} # Grab 4x4 in center of screen
                 sct_img = sct.grab(monitor)
-                img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
-                color = img.getpixel((2, 2))
-            if color == red:
+                img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX") # Grab image data
+                color = img.getpixel((2, 2)) # Grab center pixel's color
+            if color == red and isShooting == False:
                 isShooting = True
-                windll.user32.mouse_event(0x0002,0,0,0,0)
-            if isShooting == True:
-                windll.user32.mouse_event(0x0004,0,0,0,0)
+                windll.user32.mouse_event(0x0002,0,0,0,0) # Left mouse down
+            if isShooting == True and color != red:
+                windll.user32.mouse_event(0x0004,0,0,0,0) # Left mouse Up
                 isShooting = False
-            if win32api.GetKeyState(0x13) < 0 and paused == False:
+            if win32api.GetKeyState(0x13) < 0 and paused == False: #0x13 is pause
                 paused = True
                 engine.say("Paused")
                 engine.runAndWait()
-        if win32api.GetKeyState(0x13) < 0 and paused == True:
+        if win32api.GetKeyState(0x13) < 0 and paused == True: #0x13 is pause
                 paused = False
                 engine.say("Unpaused")
                 engine.runAndWait()
-        if win32api.GetKeyState(0x23) < 0:
+        if win32api.GetKeyState(0x23) < 0: #End 
             engine.say("Exiting")
             engine.runAndWait()
             active = False
